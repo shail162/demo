@@ -1,6 +1,7 @@
 package com.uno.demo.service.impl;
 
 import com.uno.demo.constants.Constants;
+import com.uno.demo.exception.EmptyDeckException;
 import com.uno.demo.model.Card.Card;
 import com.uno.demo.model.player.Player;
 import com.uno.demo.service.ICardService;
@@ -53,9 +54,14 @@ public class DealerServiceImpl implements IDealerService {
                player.addCard(cardStack.pop());
             });
         }
+
+        System.out.println("Cards distributed by dealer");
     }
 
-    public Card getTopCard(){
+    public Card getTopCard() throws EmptyDeckException {
+        if (cardStack.isEmpty()){
+            throw new EmptyDeckException(" Card Stack Over");
+        }
         return cardStack.pop();
     }
 }

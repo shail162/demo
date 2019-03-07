@@ -2,6 +2,7 @@ package com.uno.demo.game;
 
 import com.uno.demo.constants.CardType;
 import com.uno.demo.constants.Constants;
+import com.uno.demo.exception.EmptyDeckException;
 import com.uno.demo.exception.InvalidAgeException;
 import com.uno.demo.model.Card.Card;
 import com.uno.demo.model.player.Player;
@@ -29,6 +30,7 @@ public class UnoGame {
     ICardService cardService;
 
     List<Player> players = new LinkedList<>();
+    Stack<Card> cardStack;
 
     Boolean isGameOver = Boolean.FALSE;
 
@@ -39,7 +41,8 @@ public class UnoGame {
             players.add(playerService.createPlayer("Player" + i , 18));
         }
 
-        Stack<Card> cardStack = dealerService.shuffle();
+        System.out.println("Players added sucessfully.." + players.size());
+        cardStack = dealerService.shuffle();
         dealerService.distributeCards(players);
 
         /**
@@ -52,11 +55,11 @@ public class UnoGame {
         return players;
     }
 
-    public Card getCard() {
+    public Card getCard() throws EmptyDeckException {
         return dealerService.getTopCard();
     }
 
-    public void drawCard(Card topCard) {
+    public void drawCard(Card topCard)  throws EmptyDeckException{
         boolean canPlay = false;
 
         for (Player p : players) {
@@ -89,7 +92,7 @@ public class UnoGame {
         }
     }
 
-    public void removePlayedCard(Card playedCard) {
+    public void removePlayedCard(Card playedCard) throws EmptyDeckException{
         for (Player p : players) {
             if (p.hasCard(playedCard)){
                 p.removeCard(playedCard);
@@ -122,7 +125,7 @@ public class UnoGame {
         return false;
     }
 
-    public void drawPlus(int times) {
+    public void drawPlus(int times) throws EmptyDeckException{
         for (Player p : players) {
             if (!p.isMyTurn()) {
                 for (int i = 1; i <= times; i++)
@@ -137,13 +140,17 @@ public class UnoGame {
      */
     public boolean isOver() {
 
-        if(cardService.getCards().isEmpty()){
+        if(cardStack.isEmpty()){
+            System.out.println("GAME OVER!! Card stack empty ");
             return isGameOver= true;
+
         }
 
         for (Player p : players) {
             if (!p.hasCards()) {
                 isGameOver = true;
+                System.out.println("GAME OVER!! Player " + p + " finished all his cards");
+
                 break;
             }
         }
@@ -154,7 +161,7 @@ public class UnoGame {
     /**
      * Check whether the player said or forgot to say UNO
      */
-    public void checkUNO() {
+    public void checkUNO() throws EmptyDeckException {
         for (Player p : players) {
             if (p.isMyTurn()) {
                 if (p.getRemainingCards() == 1 && !p.isSaidUNO()) {

@@ -1,5 +1,6 @@
 package com.uno.demo.service;
 
+import com.uno.demo.exception.EmptyDeckException;
 import com.uno.demo.model.Card.Card;
 import com.uno.demo.model.player.Player;
 
@@ -10,5 +11,5 @@ public interface IDealerService {
 
     void distributeCards(List<Player> playerList);
     Stack<Card> shuffle();
-    Card getTopCard();
+    Card getTopCard() throws EmptyDeckException;
 }

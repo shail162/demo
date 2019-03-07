@@ -34,6 +34,7 @@ public class Player extends AbstractPlayer {
     public void removeCard(Card thisCard){
         myCards.remove(thisCard);
         remainingCards--;
+        System.out.println("remainig cards for Player " + getName() + " is " + remainingCards);
     }
 
     public void saysUNO(){
@@ -50,6 +51,10 @@ public class Player extends AbstractPlayer {
 
     public void toggleTurn(){
         isMyTurn = (isMyTurn) ? false : true;
+    }
+
+    public String toString(){
+        return super.getName();
     }
 
 }

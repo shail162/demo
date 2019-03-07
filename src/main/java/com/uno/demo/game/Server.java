@@ -4,8 +4,11 @@ import com.uno.demo.constants.ActionType;
 import com.uno.demo.constants.CardType;
 import com.uno.demo.constants.Color;
 import com.uno.demo.constants.WildType;
+import com.uno.demo.exception.EmptyDeckException;
+import com.uno.demo.exception.InvalidMoveException;
 import com.uno.demo.model.Card.Card;
 import com.uno.demo.model.player.Player;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import javax.annotation.PostConstruct;
 import java.util.Stack;
 
 @Service
+@Data
 public class Server {
 
     @Autowired
@@ -22,7 +26,9 @@ public class Server {
     public boolean canPlay;
 
     @PostConstruct
-    public void init(){
+    public void init() throws EmptyDeckException {
+
+        System.out.println("Server initialized..");
 
         playedCards = new Stack<Card>();
 
@@ -38,7 +44,7 @@ public class Server {
      *
      * @param choseCard
      */
-    public void playThisCard(Card choseCard) {
+    public void playThisCard(Card choseCard) throws InvalidMoveException,  EmptyDeckException{
 
         if (!isHisTurn(choseCard)) {
             System.out.println("It's not your turn");
@@ -62,7 +68,7 @@ public class Server {
                 game.switchTurn();
                 checkResult();
             } else {
-                System.out.println("invalid move");
+                throw new InvalidMoveException("invalid move");
             }
         }
     }
@@ -84,7 +90,7 @@ public class Server {
         return false;
     }
 
-    private void performAction(Card actionCard) {
+    private void performAction(Card actionCard) throws EmptyDeckException {
 
         if (actionCard.getCardValue().equals(ActionType.DRAW2PLUS.toString()))
             game.drawPlus(2);
@@ -94,12 +100,12 @@ public class Server {
             game.switchTurn();
     }
 
-    private void performWild(Card wildCard) {
+    private void performWild(Card wildCard)  throws EmptyDeckException{
         if (wildCard.getCardValue().equals(WildType.DRAW4PLUS.toString()))
             game.drawPlus(4);
     }
 
-    public void requestCard() {
+    public void requestCard() throws EmptyDeckException {
         game.drawCard(playedCards.peek());
     }
 

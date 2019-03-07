@@ -61,6 +61,8 @@ public class CardServiceImpl implements ICardService {
         }
 
         addWildCards();
+
+        System.out.println("Cards inialized.."  + UNOcards.size());
     }
 
     /**

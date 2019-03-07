@@ -4,6 +4,7 @@ package com.uno.demo;
 import com.uno.demo.constants.CardType;
 import com.uno.demo.constants.Color;
 import com.uno.demo.constants.Constants;
+import com.uno.demo.exception.EmptyDeckException;
 import com.uno.demo.model.Card.Card;
 import com.uno.demo.model.Card.NumberCard;
 import com.uno.demo.model.player.Player;
@@ -88,7 +89,7 @@ public class DealerServiceTest {
     }
 
     @Test
-    public void testGetTopCard(){
+    public void testGetTopCard() throws EmptyDeckException {
         Mockito.when(cardStack.pop()).thenReturn(new NumberCard(Color.GREEN, CardType.NUMBERS, "1"));
         Card numberCard = dealerService.getTopCard();
         Assert.assertTrue(numberCard.getCardColor().name() == Color.GREEN.toString());
